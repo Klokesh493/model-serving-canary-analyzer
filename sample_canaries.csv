@@ -1,0 +1,4 @@
+model,traffic_percent,p95_latency_ms,error_rate,drift_score
+ranker-v18,5,140,0.002,0.04
+vision-v7,10,310,0.018,0.11
+fraud-v12,3,190,0.004,0.09
