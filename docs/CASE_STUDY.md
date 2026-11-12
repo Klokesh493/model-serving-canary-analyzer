@@ -2,7 +2,7 @@
 
 ## Business problem
 
-Evaluates model-serving canaries using latency, error rate, and prediction drift before routing more traffic.
+A serving rollout needs a documented decision before expanding traffic when error rate, tail latency, and prediction drift disagree.
 
 ## Reproduce the workflow
 
