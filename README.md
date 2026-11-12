@@ -1,32 +1,12 @@
 # Model Serving Canary Analyzer
 
-Evaluates model-serving canaries using latency, error rate, and prediction drift before routing more traffic.
-
-Focus: model serving, canary release, SLOs, MLOps.
-
-Portfolio framing: Apple-scale client-style AI platform project using synthetic data only.
-
-## Run
-
-```bash
-python3 canary_analyzer.py sample_canaries.csv
-```
-
-## Verify
-
-```bash
-python3 -m unittest discover . -v
-```
-
-## Local verification
-
-Run `make verify` with Make and Python 3 installed. The target runs the documented sample through the project CLI. It also runs the existing Python unit tests.
-
-## Business problem
-
 A serving rollout needs a documented decision before expanding traffic when error rate, tail latency, and prediction drift disagree.
 
-## Project walkthrough
+## What I built
+
+I built a canary decision CLI that checks severe drift and error thresholds first, then evaluates moderate drift and p95 latency before promoting. JSON output shows the matched reasons.
+
+## How it works
 
 ```mermaid
 flowchart LR
@@ -40,56 +20,43 @@ flowchart LR
     C -->|No| E
 ```
 
-[Architecture and data flow](docs/ARCHITECTURE.md) · [Business problem, demo, and verification](docs/CASE_STUDY.md)
+[Architecture](docs/ARCHITECTURE.md) · [Decision rules and source](docs/RULES.md)
 
-Run `python3 canary_analyzer.py sample_canaries.csv --json` for reviewable
-decision reasons alongside model and traffic percentage.
+## Tools used
+
+| Tool | Role in this repository |
+| --- | --- |
+| Python | [canary_analyzer.py](canary_analyzer.py) implements the CLI and decision rules. Uses `argparse` to parse command-line options, `csv` to read tabular exports, `json` to read or write structured records. |
+| Make | Runs the documented example and the local `unittest` suite. |
+| Python replay runner | Compares actual stdout with the checked-in baseline fixtures. |
+| Ruff and Bandit | Developer lint and static security checks through `make check`. |
 
 ## Run the project
 
-### Local setup
-
-Run `make verify` with Python 3 and Make installed.
-
-### CLI usage
+Use Python 3.10+ and Make. From the repository root:
 
 ```sh
 python3 canary_analyzer.py sample_canaries.csv
 ```
 
-### Replay usage
+The fixture promotes ranker-v18, rolls back vision-v7, and holds fraud-v12. [Full expected output](examples/Demo%201.stdout.txt)
 
-Run `make replay` to replay the checked-in inputs. The runner compares stdout with the baseline, reports differences, and exits nonzero on regression.
+### Additional replay cases
 
-[Replay cases](examples/replay-manifest.json) · [Generated report](reports/replay.md) · [Rule implementation](docs/RULES.md)
+- **Decision reasons** · `python3 canary_analyzer.py sample_canaries.csv --json` · [Expected output](examples/Decision%20reasons.stdout.txt)
 
-### Run tests
-
-[Verification report](reports/verification.md) · [Business problem, sample behavior, and limitations](docs/CASE_STUDY.md)
-
-### Container demo
-
-The [Dockerfile](infra/Dockerfile) packages the CLI and its synthetic input.
-Emits the three sample canary decisions with reason codes.
+## Verify the project
 
 ```sh
-docker build -f infra/Dockerfile -t model-serving-canary-analyzer:local .
-docker run --rm --network none model-serving-canary-analyzer:local
+make verify
+make replay
 ```
 
-Local Python verification passed. The container build and execution were
-outside this environment's verification.
+`make replay` checks the recorded cases and exits nonzero if the output changes.
+See the [developer guide](docs/DEVELOPMENT.md) for the pinned lint and security tools.
 
-### Limitations
+## Operating limits
 
-The verification report covers the bundled local examples. See the [case study](docs/CASE_STUDY.md) for project-specific assumptions and operating limits.
+The project evaluates supplied canary summaries. It does not gather metrics or shift traffic. Apply thresholds only after checking sample volume and validation policy.
 
-## Development and security
-
-See the [developer setup, tool roles, and security checks](docs/DEVELOPMENT.md).
-
-[Local check results](reports/devsecops.md)
-
-## Runbook
-
-[Run, verify, and troubleshoot this project](docs/RUNBOOK.md)
+[Case study](docs/CASE_STUDY.md) · [Operator runbook](docs/RUNBOOK.md) · [Verification report](reports/verification.md)
