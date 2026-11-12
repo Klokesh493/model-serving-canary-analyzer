@@ -1,0 +1,3 @@
+ranker-v18: promote
+vision-v7: rollback
+fraud-v12: hold

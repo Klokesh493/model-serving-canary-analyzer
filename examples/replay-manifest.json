@@ -1,0 +1,19 @@
+[
+  {
+    "name": "Demo 1",
+    "args": [
+      "canary_analyzer.py",
+      "sample_canaries.csv"
+    ],
+    "expected": "examples/Demo 1.stdout.txt"
+  },
+  {
+    "name": "Decision reasons",
+    "args": [
+      "canary_analyzer.py",
+      "sample_canaries.csv",
+      "--json"
+    ],
+    "expected": "examples/Decision reasons.stdout.txt"
+  }
+]

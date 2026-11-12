@@ -1,0 +1,25 @@
+[
+  {
+    "model": "ranker-v18",
+    "traffic_percent": 5,
+    "decision": "promote",
+    "reasons": []
+  },
+  {
+    "model": "vision-v7",
+    "traffic_percent": 10,
+    "decision": "rollback",
+    "reasons": [
+      "error_rate_above_1_percent",
+      "drift_above_0_10"
+    ]
+  },
+  {
+    "model": "fraud-v12",
+    "traffic_percent": 3,
+    "decision": "hold",
+    "reasons": [
+      "drift_above_0_07"
+    ]
+  }
+]
