@@ -4,11 +4,14 @@ Evaluates model-serving canaries using latency, error rate, and prediction drift
 
 ```mermaid
 flowchart LR
-    N0["sample_canaries.csv"]
-    N1["canary_analyzer.py"]
-    N2["canary decision / analyze"]
-    N3["Result for operator review"]
-    N0 --> N1 --> N2 --> N3
+    A["Canary latency, error rate, and drift"]
+    B["Apply error and drift rollback thresholds"]
+    C{"Rollback threshold crossed?"}
+    D["Rollback"]
+    E["Otherwise hold on latency or moderate drift, else promote"]
+    A --> B --> C
+    C -->|Yes| D
+    C -->|No| E
 ```
 
 ## Operational boundaries
