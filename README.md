@@ -2,6 +2,8 @@
 
 A serving rollout needs a documented decision before expanding traffic when error rate, tail latency, and prediction drift disagree.
 
+[Skills and verification](docs/ENGINEERING_NOTES.md)
+
 ## What I built
 
 I built a canary decision CLI that checks severe drift and error thresholds first, then evaluates moderate drift and p95 latency before promoting. JSON output shows the matched reasons.
@@ -54,6 +56,8 @@ make replay
 
 `make replay` checks the recorded cases and exits nonzero if the output changes.
 See the [developer guide](docs/DEVELOPMENT.md) for the pinned lint and security tools.
+
+Invalid or non-finite numeric telemetry produces a hold with a reason code.
 
 ## Operating limits
 

@@ -1,12 +1,18 @@
 import argparse
 import csv
 import json
+import math
 
 
 def assess(row):
     latency = float(row["p95_latency_ms"])
     error_rate = float(row["error_rate"])
     drift = float(row["drift_score"])
+    if (not all(math.isfinite(value) for value in (latency, error_rate, drift))
+            or latency < 0 or not 0 <= error_rate <= 1 or not 0 <= drift <= 1):
+        return "hold", ["invalid_canary_metrics"]
+    if "traffic_percent" in row and not 0 <= int(row["traffic_percent"]) <= 100:
+        return "hold", ["invalid_traffic_percent"]
     rollback_reasons = [
         name for name, exceeded in (
             ("error_rate_above_1_percent", error_rate > 0.01),
